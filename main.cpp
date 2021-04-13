@@ -1,5 +1,8 @@
 #include <string>
 #include <iostream>
+#include <fstream>
+#include <list>
+
 using namespace std;
 
 template <class T>
@@ -81,7 +84,7 @@ void SimpleList<T>::insertAtStart(T val)
 {
     SimpleList<T>::Node *node = new Node(val, this->pStart);
 
-    if (this->pStart == NULL)
+    if (this->pStart == nullptr)
     {
         this->pEnd = node;
     }
@@ -92,9 +95,9 @@ void SimpleList<T>::insertAtStart(T val)
 template <class T>
 void SimpleList<T>::insertAtEnd(T val)
 {
-    SimpleList<T>::Node *node = new Node(val, NULL);
+    SimpleList<T>::Node *node = new Node(val, nullptr);
 
-    if (this->pEnd == NULL)
+    if (this->pEnd == nullptr)
     {
         this->pStart = node;
     }
@@ -159,17 +162,59 @@ T Queue<T>::pop()
     return SimpleList<T>::removeFromStart();
 }
 
+void create()
+{
+}
+
+void push()
+{
+}
+
+void pop()
+{
+}
+
+void processCommand(string cmd)
+{
+    cout << "PROCESSING COMMAND: " << cmd << '\n';
+    string type = cmd.substr(0, cmd.find(' '));
+
+    if (type == "create")
+    {
+        create();
+    }
+    else if (type == "push")
+    {
+    }
+    else if (type == "pop")
+    {
+    }
+}
+
 int main()
 {
-    Queue<int> *s = new Queue<int>("one");
-    for (int i = 0; i < 200; i++)
-    {
-        s->push(i);
-    }
+    string inputFileName;
+    string outputFileName;
 
-    for (int i = 0; i < 200; i++)
+    cout << "Please input the name of the instruction file.\n";
+    cin >> inputFileName;
+
+    cout << "Please input the name of the output file.\n";
+    cin >> outputFileName;
+
+    ifstream inputFile(inputFileName);
+    string cmd;
+
+    list<SimpleList<int> *> iList;
+    list<SimpleList<double> *> dList;
+    list<SimpleList<string> *> sList;
+
+    if (inputFile.is_open())
     {
-        cout << s->pop() << '\n';
+        while (getline(inputFile, cmd))
+        {
+            processCommand(cmd);
+        }
     }
 
     return 0;
