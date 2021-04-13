@@ -2,7 +2,7 @@
 #include <iostream>
 #include <fstream>
 #include <list>
-
+#include <regex>
 using namespace std;
 
 template <class T>
@@ -22,7 +22,6 @@ private:
         void setNextNode(Node *nextNode);
         Node *getNextNode();
     };
-
     string name;
     Node *pStart;
     Node *pEnd;
@@ -30,6 +29,7 @@ private:
 public:
     SimpleList(string name);
     string getName(void);
+    bool isEmpty();
     virtual void push(T val) = 0;
     virtual T pop() = 0;
 
@@ -43,12 +43,21 @@ template <class T>
 SimpleList<T>::SimpleList(string name)
 {
     this->name = name;
+    this->pStart = nullptr;
+    this->pEnd = nullptr;
 }
 
 template <class T>
 string SimpleList<T>::getName(void)
 {
     return name;
+}
+
+template <class T>
+bool SimpleList<T>::isEmpty(void)
+{
+    //cout << (pStart == nullptr) << (pEnd == nullptr) << '\n';
+    return (pStart == nullptr && pEnd == nullptr);
 }
 
 template <class T>
@@ -112,10 +121,16 @@ void SimpleList<T>::insertAtEnd(T val)
 template <class T>
 T SimpleList<T>::removeFromStart()
 {
-    Node *temp = this->pStart->getNextNode();
+    Node *temp = this->pStart;
     T val = this->pStart->getVal();
-    delete this->pStart;
-    this->pStart = temp;
+
+    if (temp->getNextNode() == nullptr)
+    {
+        this->pEnd = nullptr;
+    }
+
+    this->pStart = temp->getNextNode();
+    delete temp;
 
     return val;
 }
@@ -162,32 +177,191 @@ T Queue<T>::pop()
     return SimpleList<T>::removeFromStart();
 }
 
-void create()
+template <class T>
+SimpleList<T> *listExists(string name, list<SimpleList<T> *> *list)
 {
-}
-
-void push()
-{
-}
-
-void pop()
-{
-}
-
-void processCommand(string cmd)
-{
-    cout << "PROCESSING COMMAND: " << cmd << '\n';
-    string type = cmd.substr(0, cmd.find(' '));
-
-    if (type == "create")
+    for (auto obj : *list)
     {
-        create();
+        if (obj->getName() == name)
+        {
+            return obj;
+        }
     }
-    else if (type == "push")
+
+    return NULL;
+}
+
+void create(string name, string parameter, list<SimpleList<int> *> *iListP, list<SimpleList<double> *> *dListP, list<SimpleList<string> *> *sListP)
+{
+    if (name[0] == 'i')
     {
+        SimpleList<int> *list = listExists(name, iListP);
+        if (list != NULL)
+        {
+            cout << "ERROR: This name already exists!\n";
+        }
+        else
+        {
+            iListP->push_back(parameter == "stack" ? new Stack<int>(name) : new Stack<int>(name));
+        }
     }
-    else if (type == "pop")
+    else if (name[0] == 'd')
     {
+        SimpleList<double> *list = listExists(name, dListP);
+        if (list != NULL)
+        {
+            cout << "ERROR: This name already exists!\n";
+        }
+        else
+        {
+            dListP->push_back(parameter == "stack" ? new Stack<double>(name) : new Stack<double>(name));
+        }
+    }
+    else if (name[0] == 's')
+    {
+        SimpleList<string> *list = listExists(name, sListP);
+        if (list != NULL)
+        {
+            cout << "ERROR: This name already exists!\n";
+        }
+        else
+        {
+            sListP->push_back(parameter == "stack" ? new Stack<string>(name) : new Stack<string>(name));
+        }
+    }
+}
+
+void push(string name, string parameter, list<SimpleList<int> *> *iListP, list<SimpleList<double> *> *dListP, list<SimpleList<string> *> *sListP)
+{
+    if (name[0] == 'i')
+    {
+        SimpleList<int> *list = listExists(name, iListP);
+        if (list != NULL)
+        {
+            list->push(stoi(parameter));
+        }
+        else
+        {
+            cout << "ERROR: This name does not exist!\n";
+        }
+    }
+    else if (name[0] == 'd')
+    {
+        SimpleList<double> *list = listExists(name, dListP);
+        if (list != NULL)
+        {
+            list->push(stod(parameter));
+        }
+        else
+        {
+            cout << "ERROR: This name does not exist!\n";
+        }
+    }
+    else if (name[0] == 's')
+    {
+        SimpleList<string> *list = listExists(name, sListP);
+        if (list != NULL)
+        {
+            list->push(parameter);
+        }
+        else
+        {
+            cout << "ERROR: This name does not exist!\n";
+        }
+    }
+}
+
+void pop(string name, list<SimpleList<int> *> *iListP, list<SimpleList<double> *> *dListP, list<SimpleList<string> *> *sListP)
+{
+    if (name[0] == 'i')
+    {
+        SimpleList<int> *list = listExists(name, iListP);
+
+        if (list != nullptr)
+        {
+            if (list->isEmpty())
+            {
+                cout << "ERROR: This list is empty!\n";
+            }
+            else
+            {
+                int val = list->pop();
+                cout << "Value Popped: " << val << '\n';
+            }
+        }
+        else
+        {
+            cout << "ERROR: This name does not exist!\n";
+        }
+    }
+    else if (name[0] == 'd')
+    {
+        SimpleList<double> *list = listExists(name, dListP);
+
+        if (list != nullptr)
+        {
+            if (list->isEmpty())
+            {
+            }
+            else
+            {
+                double val = list->pop();
+                cout << "Value Popped: " << val << '\n';
+            }
+        }
+        else
+        {
+            cout << "ERROR: This name does not exist!\n";
+        }
+    }
+    else if (name[0] == 's')
+    {
+        SimpleList<string> *list = listExists(name, sListP);
+
+        if (list != nullptr)
+        {
+            if (list->isEmpty())
+            {
+                cout << "ERROR: This list is empty!\n";
+            }
+            else
+            {
+                string val = list->pop();
+                cout << "Value Popped: " << val << '\n';
+            }
+        }
+        else
+        {
+            cout << "ERROR: This name does not exist!\n";
+        }
+    }
+}
+
+void processCommand(string cmd, list<SimpleList<int> *> *iListP, list<SimpleList<double> *> *dListP, list<SimpleList<string> *> *sListP)
+{
+    regex r("(\\w+) (\\w+) ?(.*)?");
+    smatch m;
+
+    if (regex_search(cmd, m, r))
+    {
+        string action = m[1];
+        string name = m[2];
+        string parameter = m[3];
+
+        cout << "PROCESSING COMMAND: " << cmd << '\n';
+
+        if (action == "create")
+        {
+            create(name, parameter, iListP, dListP, sListP);
+        }
+        else if (action == "push")
+        {
+            push(name, parameter, iListP, dListP, sListP);
+        }
+        else if (action == "pop")
+        {
+            pop(name, iListP, dListP, sListP);
+        }
     }
 }
 
@@ -213,7 +387,7 @@ int main()
     {
         while (getline(inputFile, cmd))
         {
-            processCommand(cmd);
+            processCommand(cmd, &iList, &dList, &sList);
         }
     }
 
