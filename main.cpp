@@ -191,18 +191,18 @@ SimpleList<T> *listExists(string name, list<SimpleList<T> *> *list)
     return NULL;
 }
 
-void create(string name, string parameter, list<SimpleList<int> *> *iListP, list<SimpleList<double> *> *dListP, list<SimpleList<string> *> *sListP)
+void create(string name, string parameter, list<SimpleList<int> *> *iListP, list<SimpleList<double> *> *dListP, list<SimpleList<string> *> *sListP, ofstream *outputFile)
 {
     if (name[0] == 'i')
     {
         SimpleList<int> *list = listExists(name, iListP);
         if (list != NULL)
         {
-            cout << "ERROR: This name already exists!\n";
+            *outputFile << "ERROR: This name already exists!" << '\n';
         }
         else
         {
-            iListP->push_back(parameter == "stack" ? new Stack<int>(name) : new Stack<int>(name));
+            iListP->push_back(parameter == "stack" ? (SimpleList<int> *)new Stack<int>(name) : (SimpleList<int> *)new Queue<int>(name));
         }
     }
     else if (name[0] == 'd')
@@ -210,11 +210,11 @@ void create(string name, string parameter, list<SimpleList<int> *> *iListP, list
         SimpleList<double> *list = listExists(name, dListP);
         if (list != NULL)
         {
-            cout << "ERROR: This name already exists!\n";
+            *outputFile << "ERROR: This name already exists!" << '\n';
         }
         else
         {
-            dListP->push_back(parameter == "stack" ? new Stack<double>(name) : new Stack<double>(name));
+            dListP->push_back(parameter == "stack" ? (SimpleList<double> *)new Stack<double>(name) : (SimpleList<double> *)new Queue<double>(name));
         }
     }
     else if (name[0] == 's')
@@ -222,16 +222,16 @@ void create(string name, string parameter, list<SimpleList<int> *> *iListP, list
         SimpleList<string> *list = listExists(name, sListP);
         if (list != NULL)
         {
-            cout << "ERROR: This name already exists!\n";
+            *outputFile << "ERROR: This name already exists!" << '\n';
         }
         else
         {
-            sListP->push_back(parameter == "stack" ? new Stack<string>(name) : new Stack<string>(name));
+            sListP->push_back(parameter == "stack" ? (SimpleList<string> *)new Stack<string>(name) : (SimpleList<string> *)new Queue<string>(name));
         }
     }
 }
 
-void push(string name, string parameter, list<SimpleList<int> *> *iListP, list<SimpleList<double> *> *dListP, list<SimpleList<string> *> *sListP)
+void push(string name, string parameter, list<SimpleList<int> *> *iListP, list<SimpleList<double> *> *dListP, list<SimpleList<string> *> *sListP, ofstream *outputFile)
 {
     if (name[0] == 'i')
     {
@@ -242,7 +242,7 @@ void push(string name, string parameter, list<SimpleList<int> *> *iListP, list<S
         }
         else
         {
-            cout << "ERROR: This name does not exist!\n";
+            *outputFile << "ERROR: This name does not exist!" << '\n';
         }
     }
     else if (name[0] == 'd')
@@ -254,7 +254,7 @@ void push(string name, string parameter, list<SimpleList<int> *> *iListP, list<S
         }
         else
         {
-            cout << "ERROR: This name does not exist!\n";
+            *outputFile << "ERROR: This name does not exist!" << '\n';
         }
     }
     else if (name[0] == 's')
@@ -266,12 +266,12 @@ void push(string name, string parameter, list<SimpleList<int> *> *iListP, list<S
         }
         else
         {
-            cout << "ERROR: This name does not exist!\n";
+            *outputFile << "ERROR: This name does not exist!" << '\n';
         }
     }
 }
 
-void pop(string name, list<SimpleList<int> *> *iListP, list<SimpleList<double> *> *dListP, list<SimpleList<string> *> *sListP)
+void pop(string name, list<SimpleList<int> *> *iListP, list<SimpleList<double> *> *dListP, list<SimpleList<string> *> *sListP, ofstream *outputFile)
 {
     if (name[0] == 'i')
     {
@@ -281,17 +281,17 @@ void pop(string name, list<SimpleList<int> *> *iListP, list<SimpleList<double> *
         {
             if (list->isEmpty())
             {
-                cout << "ERROR: This list is empty!\n";
+                *outputFile << "ERROR: This list is empty!" << '\n';
             }
             else
             {
                 int val = list->pop();
-                cout << "Value Popped: " << val << '\n';
+                *outputFile << "Value popped: " << val << '\n';
             }
         }
         else
         {
-            cout << "ERROR: This name does not exist!\n";
+            *outputFile << "ERROR: This name does not exist!" << '\n';
         }
     }
     else if (name[0] == 'd')
@@ -302,16 +302,17 @@ void pop(string name, list<SimpleList<int> *> *iListP, list<SimpleList<double> *
         {
             if (list->isEmpty())
             {
+                *outputFile << "ERROR: This list is empty!" << '\n';
             }
             else
             {
                 double val = list->pop();
-                cout << "Value Popped: " << val << '\n';
+                *outputFile << "Value popped: " << val << '\n';
             }
         }
         else
         {
-            cout << "ERROR: This name does not exist!\n";
+            *outputFile << "ERROR: This name does not exist!" << '\n';
         }
     }
     else if (name[0] == 's')
@@ -322,22 +323,22 @@ void pop(string name, list<SimpleList<int> *> *iListP, list<SimpleList<double> *
         {
             if (list->isEmpty())
             {
-                cout << "ERROR: This list is empty!\n";
+                *outputFile << "ERROR: This list is empty!" << '\n';
             }
             else
             {
                 string val = list->pop();
-                cout << "Value Popped: " << val << '\n';
+                *outputFile << "Value popped: " << val << '\n';
             }
         }
         else
         {
-            cout << "ERROR: This name does not exist!\n";
+            *outputFile << "ERROR: This name does not exist!" << '\n';
         }
     }
 }
 
-void processCommand(string cmd, list<SimpleList<int> *> *iListP, list<SimpleList<double> *> *dListP, list<SimpleList<string> *> *sListP)
+void processCommand(string cmd, list<SimpleList<int> *> *iListP, list<SimpleList<double> *> *dListP, list<SimpleList<string> *> *sListP, ofstream *outputFile)
 {
     regex r("(\\w+) (\\w+) ?(.*)?");
     smatch m;
@@ -348,19 +349,19 @@ void processCommand(string cmd, list<SimpleList<int> *> *iListP, list<SimpleList
         string name = m[2];
         string parameter = m[3];
 
-        cout << "PROCESSING COMMAND: " << cmd << '\n';
+        *outputFile << "PROCESSING COMMAND: " << cmd << '\n';
 
         if (action == "create")
         {
-            create(name, parameter, iListP, dListP, sListP);
+            create(name, parameter, iListP, dListP, sListP, outputFile);
         }
         else if (action == "push")
         {
-            push(name, parameter, iListP, dListP, sListP);
+            push(name, parameter, iListP, dListP, sListP, outputFile);
         }
         else if (action == "pop")
         {
-            pop(name, iListP, dListP, sListP);
+            pop(name, iListP, dListP, sListP, outputFile);
         }
     }
 }
@@ -377,6 +378,7 @@ int main()
     cin >> outputFileName;
 
     ifstream inputFile(inputFileName);
+    ofstream outputFile(outputFileName);
     string cmd;
 
     list<SimpleList<int> *> iList;
@@ -387,7 +389,7 @@ int main()
     {
         while (getline(inputFile, cmd))
         {
-            processCommand(cmd, &iList, &dList, &sList);
+            processCommand(cmd, &iList, &dList, &sList, &outputFile);
         }
     }
 
